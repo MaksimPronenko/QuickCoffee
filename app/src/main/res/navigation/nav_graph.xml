@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/RegistrationFragment">
+
+    <fragment
+        android:id="@+id/RegistrationFragment"
+        android:name="home.samples.quickcoffee.ui.registration.RegistrationFragment"
+        tools:layout="@layout/fragment_registration">
+
+        <action
+            android:id="@+id/action_HotelFragment_to_RoomFragment"
+            app:destination="@id/LoginFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="home.samples.quickcoffee.ui.login.LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/action_RoomFragment_to_BookingFragment"
+            app:destination="@id/CafeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/CafeFragment"
+        android:name="home.samples.quickcoffee.ui.cafe.CafeFragment"
+        tools:layout="@layout/fragment_cafe">
+
+        <action
+            android:id="@+id/action_BookingFragment_to_PaymentFragment"
+            app:destination="@id/MenuFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/MenuFragment"
+        android:name="home.samples.quickcoffee.ui.menu.MenuFragment"
+        tools:layout="@layout/fragment_menu">
+
+        <action
+            android:id="@+id/action_MenuFragment_to_OrderFragment"
+            app:destination="@id/OrderFragment"
+            app:popUpTo="@+id/OrderFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/OrderFragment"
+        android:name="home.samples.quickcoffee.ui.order.OrderFragment"
+        tools:layout="@layout/fragment_order">
+
+        <action
+            android:id="@+id/action_OrderFragment_to_RegistrationFragment"
+            app:destination="@id/RegistrationFragment"
+            app:popUpTo="@+id/RegistrationFragment"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+</navigation>
