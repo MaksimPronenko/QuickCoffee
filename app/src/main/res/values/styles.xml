@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ButtonBrownBorderlessHeight48" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:backgroundTint">@color/brown_background</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:strokeWidth">0</item>
+        <item name="android:fontFamily">@font/sf_ui_display_bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/beige_text</item>
+    </style>
+
+    <style name="BookingInputLayoutOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/brown_light_text</item>
+        <item name="boxStrokeColor">@color/brown_text</item>
+        <item name="background">@drawable/button_rounded_24</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+</resources>
