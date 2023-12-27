@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">QuickCoffee</string>
+    <string name="registration">Регистрация</string>
+    <string name="email">e-mail</string>
+    <string name="password">Пароль</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="login_title">Вход</string>
+    <string name="login_to_application">Войти</string>
+    <string name="nearest_coffee_shop">Ближайшие кофейни</string>
+    <string name="km_to_you">км от вас</string>
+    <string name="menu">Меню</string>
+    <string name="go_to_payment">Перейти к оплате</string>
+    <string name="your_order">Ваш заказ</string>
+    <string name="order_information">Время ожидания заказа\n15 минут!\nСпасибо, что выбрали нас!</string>
+    <string name="pay">Оплатить</string>
 </resources>
