@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_registration">
 
         <action
-            android:id="@+id/action_HotelFragment_to_RoomFragment"
+            android:id="@+id/action_RegistrationFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
 
     </fragment>
@@ -22,8 +22,8 @@
         tools:layout="@layout/fragment_login">
 
         <action
-            android:id="@+id/action_RoomFragment_to_BookingFragment"
-            app:destination="@id/CafeFragment" />
+            android:id="@+id/action_LoginFragment_to_CafeFragment"
+            app:destination="@id/CafeFragment"/>
 
     </fragment>
 
@@ -32,8 +32,13 @@
         android:name="home.samples.quickcoffee.ui.cafe.CafeFragment"
         tools:layout="@layout/fragment_cafe">
 
+        <argument
+            android:name="token"
+            android:defaultValue=""
+            app:argType="string" />
+
         <action
-            android:id="@+id/action_BookingFragment_to_PaymentFragment"
+            android:id="@+id/action_CafeFragment_to_MenuFragment"
             app:destination="@id/MenuFragment" />
 
     </fragment>

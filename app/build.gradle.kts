@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "home.samples.quickcoffee"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "home.samples.quickcoffee"
@@ -67,6 +67,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.8.0")
     implementation("com.squareup.okhttp3:okhttp:3.8.0")
+
+    // Geolocation
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.14.2")

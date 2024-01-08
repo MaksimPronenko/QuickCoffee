@@ -11,11 +11,10 @@
         <item name="android:textColor">@color/beige_text</item>
     </style>
 
-    <style name="BookingInputLayoutOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <style name="BookingInputLayoutCoffee" parent="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
         <item name="android:textColorHint">@color/brown_light_text</item>
-        <item name="boxStrokeColor">@color/brown_text</item>
-        <item name="background">@drawable/button_rounded_24</item>
-        <item name="android:minHeight">48dp</item>
+        <item name="boxBackgroundColor">@color/transparent</item>
+        <item name="boxStrokeWidth">2dp</item>
     </style>
 
 </resources>

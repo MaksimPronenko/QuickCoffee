@@ -1,13 +1,15 @@
 package home.samples.quickcoffee.api
 
+import home.samples.quickcoffee.models.CafeData
 import home.samples.quickcoffee.models.RegistrationData
 import home.samples.quickcoffee.models.RegistrationResult
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -18,7 +20,18 @@ interface CoffeeApi {
         "Accept: application/json;charset=utf-8"
     )
     @POST("/auth/register")
-    suspend fun register(@Body registrationData: RegistrationData): Response<RegistrationResult>
+    suspend fun register(@Body registrationData: RegistrationData): RegistrationResult
+
+    @Headers(
+        "Content-Type: application/json;charset=utf-8",
+        "Accept: application/json;charset=utf-8"
+    )
+    @POST("/auth/login")
+    suspend fun login(@Body registrationData: RegistrationData): RegistrationResult
+
+    @GET("/locations")
+    suspend fun getLocations(@Header("Authorization") bearerToken: String): List<CafeData>?
+//    suspend fun getLocations(@Header("Bearer Token") token: String): List<CafeData>?
 
 //    @GET("/v3/d144777c-a67f-4e35-867a-cacc3b827473")
 //    suspend fun getHotel(): Hotel?
