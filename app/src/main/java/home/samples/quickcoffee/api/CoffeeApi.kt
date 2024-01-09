@@ -1,6 +1,7 @@
 package home.samples.quickcoffee.api
 
 import home.samples.quickcoffee.models.CafeData
+import home.samples.quickcoffee.models.MenuItem
 import home.samples.quickcoffee.models.RegistrationData
 import home.samples.quickcoffee.models.RegistrationResult
 import okhttp3.OkHttpClient
@@ -12,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface CoffeeApi {
 
@@ -31,16 +33,13 @@ interface CoffeeApi {
 
     @GET("/locations")
     suspend fun getLocations(@Header("Authorization") bearerToken: String): List<CafeData>?
-//    suspend fun getLocations(@Header("Bearer Token") token: String): List<CafeData>?
 
-//    @GET("/v3/d144777c-a67f-4e35-867a-cacc3b827473")
-//    suspend fun getHotel(): Hotel?
-//
-//    @GET("/v3/8b532701-709e-4194-a41c-1a903af00195")
-//    suspend fun getRoomsList(): RoomsList?
-//
-//    @GET("/v3/63866c74-d593-432c-af8e-f279d1a8d2ff")
-//    suspend fun getBookingData(): BookingData?
+    @GET("/location/{id}/menu")
+    suspend fun getCafeMenu(
+        @Header("Authorization") bearerToken: String,
+        @Path("id") id: Int
+    ): List<MenuItem>?
+
 }
 
 val retrofit: CoffeeApi = Retrofit

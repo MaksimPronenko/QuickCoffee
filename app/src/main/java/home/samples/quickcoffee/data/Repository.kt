@@ -3,6 +3,7 @@ package home.samples.quickcoffee.data
 import android.util.Log
 import home.samples.quickcoffee.api.retrofit
 import home.samples.quickcoffee.models.CafeData
+import home.samples.quickcoffee.models.MenuItem
 import home.samples.quickcoffee.models.RegistrationData
 import home.samples.quickcoffee.models.RegistrationResult
 import javax.inject.Inject
@@ -46,6 +47,23 @@ class Repository @Inject constructor() {
         val bearerToken = "Bearer $token"
         kotlin.runCatching {
             retrofit.getLocations(bearerToken)
+        }.fold(
+            onSuccess = {
+                Log.d(TAG, it.toString())
+                return it
+            },
+            onFailure = {
+                Log.d(TAG, "Failure")
+                return null
+            }
+        )
+    }
+
+    suspend fun getCafeMenu(token: String, id: Int): List<MenuItem>? {
+        Log.d(TAG, "token = $token, id = $id")
+        val bearerToken = "Bearer $token"
+        kotlin.runCatching {
+            retrofit.getCafeMenu(bearerToken, id)
         }.fold(
             onSuccess = {
                 Log.d(TAG, it.toString())

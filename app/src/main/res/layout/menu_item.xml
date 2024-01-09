@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="165dp"
         android:layout_height="205dp"
         android:layout_margin="6.5dp"
         android:background="@drawable/menu_item_background"
@@ -16,16 +16,17 @@
             android:id="@+id/image"
             android:layout_width="0dp"
             android:layout_height="137dp"
-            app:srcCompat="@drawable/ic_launcher_background"
-            app:layout_constraintEnd_toEndOf="parent"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/customRoundedImageView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/customRoundedImageView"
+            app:srcCompat="@drawable/ic_launcher_background"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/coffee_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="11dp"
             android:layout_marginTop="10dp"
@@ -35,6 +36,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image"
+            tools:ignore="TextContrastCheck"
             tools:text="@tools:sample/cities" />
 
         <TextView
@@ -50,7 +52,46 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/coffee_name"
+            tools:ignore="TextSizeCheck"
             tools:text="@tools:sample/cities" />
+
+        <ImageButton
+            android:id="@+id/minus_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/minus"
+            app:layout_constraintBottom_toBottomOf="@id/cost"
+            app:layout_constraintStart_toEndOf="@id/cost"
+            app:layout_constraintTop_toTopOf="@id/cost"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/quantity"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/sf_ui_display_medium"
+            android:textColor="@color/brown_text"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/cost"
+            app:layout_constraintStart_toEndOf="@id/minus_button"
+            app:layout_constraintTop_toTopOf="@id/cost"
+            tools:ignore="TextSizeCheck"
+            tools:text="2" />
+
+        <ImageButton
+            android:id="@+id/plus_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="9dp"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/plus"
+            app:layout_constraintBottom_toBottomOf="@id/cost"
+            app:layout_constraintStart_toEndOf="@id/quantity"
+            app:layout_constraintTop_toTopOf="@id/cost"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
