@@ -196,6 +196,7 @@
         android:text="@string/no_permission_error"
         android:fontFamily="@font/sf_ui_display_semibold"
         android:textSize="18sp"
+        android:visibility="invisible"
         android:gravity="center"
         android:textColor="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"

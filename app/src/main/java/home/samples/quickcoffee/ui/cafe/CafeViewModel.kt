@@ -9,14 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import home.samples.quickcoffee.data.Repository
 import home.samples.quickcoffee.models.CafeData
 import home.samples.quickcoffee.models.CafeItem
-import home.samples.quickcoffee.ui.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +28,7 @@ class CafeViewModel(
     private val repository: Repository,
     application: Application
 ) : ViewModel() {
-    private val _state = MutableStateFlow<ViewModelState>(ViewModelState.Loading)
+    private val _state = MutableStateFlow<CafeVMState>(CafeVMState.Loading)
     val state = _state.asStateFlow()
 
     var token: String? = null
@@ -39,17 +37,21 @@ class CafeViewModel(
     private val _cafeFlow = MutableStateFlow<List<CafeItem>>(emptyList())
     val cafeFlow = _cafeFlow.asStateFlow()
 
-    var firstLoading = true
     var latitudeCenterCurrent: Double? = null
     var longitudeCenterCurrent: Double? = null
 
-    private val fusedClient: FusedLocationProviderClient =
+    val fusedClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(application.applicationContext)
 
-    private val locationCallback = object : LocationCallback() {
+    val locationCallback = object : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
             latitudeCenterCurrent = result.lastLocation?.latitude
             longitudeCenterCurrent = result.lastLocation?.longitude
+            Log.d(TAG, "locationCallback: lat = $latitudeCenterCurrent, lon = $longitudeCenterCurrent")
+            cafeItemsList = createCafeItemsList()
+            Log.d(TAG, cafeItemsList.toString())
+            _cafeFlow.value = cafeItemsList
+            _state.value = CafeVMState.DistancesLoaded
 //            if (latitudeCenterCurrent == null || longitudeCenterCurrent == null) {
 //                _state.value = ViewModelState.Error
 //            } else {
@@ -63,15 +65,16 @@ class CafeViewModel(
 
     @SuppressLint("MissingPermission")
     fun startLocation() {
-//        val request = LocationRequest.create()
-//            .setInterval(1_000)
-//            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-            .apply {
-                setWaitForAccurateLocation(false)
-                setMinUpdateIntervalMillis(IMPLICIT_MIN_UPDATE_INTERVAL)
-                setMaxUpdateDelayMillis(100000)
-            }.build()
+        Log.d(TAG, "Функция startLocation() запущена")
+        val request = LocationRequest.create()
+            .setInterval(1_000)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+//        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+//            .apply {
+//                setWaitForAccurateLocation(false)
+//                setMinUpdateIntervalMillis(IMPLICIT_MIN_UPDATE_INTERVAL)
+//                setMaxUpdateDelayMillis(100000)
+//            }.build()
 
         fusedClient.requestLocationUpdates(
             request,
@@ -80,23 +83,22 @@ class CafeViewModel(
         )
     }
 
-    fun loadCafesLocations(token: String?) {
+    fun loadCafesLocations() {
         Log.d(TAG, "Функция loadCafe() запущена")
-        startLocation()
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = ViewModelState.Loading
-            Log.d(TAG, "ViewModelState.Loading")
+            _state.value = CafeVMState.Loading
+            Log.d(TAG, "CafeVMState.Loading")
 
-            if (token != null) cafeList = repository.getLocations(token) ?: emptyList()
+            if (token != null) cafeList = repository.getLocations(token!!) ?: emptyList()
             if (cafeList.isEmpty()) {
-                Log.d(TAG, "ViewModelState.Error")
-                _state.value = ViewModelState.Error
+                Log.d(TAG, "CafeVMState.Error")
+                _state.value = CafeVMState.Error
             } else {
                 cafeItemsList = createCafeItemsList()
                 Log.d(TAG, cafeItemsList.toString())
                 _cafeFlow.value = cafeItemsList
-                Log.d(TAG, "ViewModelState.Loaded")
-                _state.value = ViewModelState.Loaded
+                Log.d(TAG, "CafeVMState.Loaded")
+                _state.value = CafeVMState.Loaded
             }
         }
     }
@@ -115,9 +117,9 @@ class CafeViewModel(
                             Math.PI * cafeLongitude / 180
                         )
                     )
-                    "$result км от вас"
+                    "${result.toInt()} км от вас"
                 } else {
-                    "$latitudeCenterCurrent - $cafeLatitude; $longitudeCenterCurrent - $cafeLongitude"
+                    ""
                 }
             cafes.add(
                 CafeItem(

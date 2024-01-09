@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,7 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import home.samples.quickcoffee.R
 import home.samples.quickcoffee.databinding.FragmentCafeBinding
 import home.samples.quickcoffee.models.CafeItem
-import home.samples.quickcoffee.ui.ViewModelState
 import home.samples.quickcoffee.ui.adapters.CafeAdapter
 import home.samples.quickcoffee.ui.menu.ARG_CAFE_ID
 import kotlinx.coroutines.flow.launchIn
@@ -46,6 +46,8 @@ class CafeFragment : Fragment() {
         viewModel.token = tokenFr
         Log.d(TAG, viewModel.token.toString())
 
+        viewModel.startLocation()
+
         cafeAdapter = CafeAdapter(
             context = requireContext(),
             onClick = { cafeItem -> onCafeChosenClick(cafeItem) }
@@ -63,8 +65,7 @@ class CafeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "Функция onViewCreated() запущена")
-
-        viewModel.loadCafesLocations(viewModel.token)
+        viewModel.loadCafesLocations()
         binding.cafesRecycler.adapter = cafeAdapter
         statesProcessing()
     }
@@ -75,23 +76,36 @@ class CafeFragment : Fragment() {
                 viewModel.state
                     .collect { state ->
                         when (state) {
-                            ViewModelState.Loading -> {
-                                val infoText = "token = ${viewModel.token}"
-                                binding.information.text = infoText
+                            CafeVMState.Loading -> {
+                                binding.progress.isVisible = true
+                                binding.loadingError.isVisible = false
+                                binding.cafesRecycler.isVisible = false
                             }
 
-                            ViewModelState.Loaded -> {
-                                binding.information.text = viewModel.cafeItemsList.toString()
+                            CafeVMState.Loaded -> {
+                                binding.progress.isVisible = true
+                                binding.loadingError.isVisible = false
+                                binding.cafesRecycler.isVisible = true
                                 viewModel.cafeFlow.onEach {
                                     cafeAdapter.setData(it)
                                 }.launchIn(viewLifecycleOwner.lifecycleScope)
 
-                                viewModel.firstLoading = false
                             }
 
-                            ViewModelState.Error -> {
-                                val infoText = "Error"
-                                binding.information.text = infoText
+                            CafeVMState.DistancesLoaded -> {
+                                binding.progress.isVisible = false
+                                binding.loadingError.isVisible = false
+                                binding.cafesRecycler.isVisible = true
+                                viewModel.cafeFlow.onEach {
+                                    cafeAdapter.setData(it)
+                                }.launchIn(viewLifecycleOwner.lifecycleScope)
+
+                            }
+
+                            CafeVMState.Error -> {
+                                binding.progress.isVisible = false
+                                binding.loadingError.isVisible = true
+                                binding.cafesRecycler.isVisible = false
                             }
                         }
                     }
@@ -108,5 +122,10 @@ class CafeFragment : Fragment() {
                 )
             }
         findNavController().navigate(R.id.action_CafeFragment_to_MenuFragment, bundle)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.fusedClient.removeLocationUpdates(viewModel.locationCallback)
     }
 }
