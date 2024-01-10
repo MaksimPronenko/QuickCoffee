@@ -1,7 +1,7 @@
 package home.samples.quickcoffee.api
 
 import home.samples.quickcoffee.models.CafeData
-import home.samples.quickcoffee.models.MenuItem
+import home.samples.quickcoffee.models.MenuData
 import home.samples.quickcoffee.models.RegistrationData
 import home.samples.quickcoffee.models.RegistrationResult
 import okhttp3.OkHttpClient
@@ -38,7 +38,7 @@ interface CoffeeApi {
     suspend fun getCafeMenu(
         @Header("Authorization") bearerToken: String,
         @Path("id") id: Int
-    ): List<MenuItem>?
+    ): List<MenuData>?
 
 }
 

@@ -36,14 +36,11 @@ class CafeFragment : Fragment() {
     private var _binding: FragmentCafeBinding? = null
     private val binding get() = _binding!!
 
-    private var tokenFr: String? = null
-
     private lateinit var cafeAdapter: CafeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tokenFr = arguments?.getString(ARG_TOKEN)
-        viewModel.token = tokenFr
+        viewModel.token = arguments?.getString(ARG_TOKEN)
         Log.d(TAG, viewModel.token.toString())
 
         viewModel.startLocation()

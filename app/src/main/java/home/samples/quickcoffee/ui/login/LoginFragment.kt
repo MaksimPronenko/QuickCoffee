@@ -91,8 +91,9 @@ class LoginFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.loginError.collect { error ->
-                    if (error) {
+                viewModel.loginResult.collect { result ->
+                    // result = true - это ошибка входа
+                    if (result) {
                         Toast.makeText(
                             requireContext(),
                             getText(R.string.registration_error),

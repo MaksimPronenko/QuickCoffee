@@ -1,9 +1,8 @@
 package home.samples.quickcoffee.models
 
-class MenuItem (
+data class MenuData(
     val id: Int,
     val name: String,
     val imageURL: String,
-    val quantity: Int,
-    val priceSum: Int
+    val price: Int
 )

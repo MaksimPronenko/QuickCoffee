@@ -19,4 +19,5 @@
     <string name="pay">Оплатить</string>
     <string name="no_permission_error">Нет разрешений, необходимых для работы приложения</string>
     <string name="loading_error">Ошибка загрузки</string>
+    <string name="ruble">руб</string>
 </resources>

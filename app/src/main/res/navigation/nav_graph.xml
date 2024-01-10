@@ -49,6 +49,11 @@
         tools:layout="@layout/fragment_menu">
 
         <argument
+            android:name="token"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <argument
             android:name="id"
             app:argType="integer" />
 

@@ -39,32 +39,6 @@ class CafeAdapter(
         with(holder.binding) {
             item?.let { cafe ->
                 cafeName.text = cafe.name
-
-//                var distanceText = context.getString(R.string.km_to_you)
-//                val distanceText = if (latitude != null && longitude != null) {
-//                    val cafeLatitude = cafe.point.latitude.toDouble()
-//                    val cafeLongitude = cafe.point.longitude.toDouble()
-//                    val result = 111.2 * Math.sqrt(
-//                        (longitude - cafeLongitude) * (longitude - cafeLongitude) + (latitude - cafeLatitude) * Math.cos(
-//                            Math.PI * longitude / 180
-//                        ) * (latitude - cafeLatitude) * Math.cos(
-//                            Math.PI * cafeLongitude / 180
-//                        )
-//                    )
-//                    "$result " + context.getString(R.string.km_to_you)
-//                } else {
-//                    ""
-//                }
-
-//                var lon: Double
-//                var lat: Double
-//                var lon2: Double
-//                var lat2: Double
-//                val result = 111.2 * Math.sqrt(
-//                    (lon - lon2) * (lon - lon2) + (lat - lat2) * Math.cos(Math.PI * lon / 180) * (lat - lat2) * Math.cos(
-//                        Math.PI * lon / 180
-//                    )
-//                )
                 distance.text = cafe.distance
             }
         }

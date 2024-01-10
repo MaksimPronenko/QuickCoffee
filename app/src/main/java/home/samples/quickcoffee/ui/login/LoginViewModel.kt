@@ -27,8 +27,8 @@ class LoginViewModel(
     )
     val state = _state.asStateFlow()
 
-    private val _loginError = Channel<Boolean>()
-    val loginError = _loginError.receiveAsFlow()
+    private val _loginResult = Channel<Boolean>()
+    val loginResult = _loginResult.receiveAsFlow()
 
     var email: String? = null
     var emailState: Boolean? = null
@@ -56,7 +56,7 @@ class LoginViewModel(
 
             _state.value = LoginVMState.WorkingState(emailState, passwordState)
             Log.d(TAG, "LoginVMState.WorkingState")
-            _loginError.send(registrationResult == null)
+            _loginResult.send(registrationResult == null)
         }
     }
 
