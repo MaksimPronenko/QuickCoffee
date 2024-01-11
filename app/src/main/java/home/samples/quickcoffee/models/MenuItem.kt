@@ -4,6 +4,6 @@ class MenuItem (
     val id: Int,
     val name: String,
     val imageURL: String,
-    val quantity: Int,
-    val priceSum: Int
+    var quantity: Int,
+    var price: Int
 )

@@ -20,4 +20,5 @@
     <string name="no_permission_error">Нет разрешений, необходимых для работы приложения</string>
     <string name="loading_error">Ошибка загрузки</string>
     <string name="ruble">руб</string>
+    <string name="order_is_empty">Заказ пуст</string>
 </resources>

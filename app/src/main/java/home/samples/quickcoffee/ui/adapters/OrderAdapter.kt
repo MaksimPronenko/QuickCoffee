@@ -5,29 +5,30 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import home.samples.quickcoffee.R
-import home.samples.quickcoffee.databinding.MenuItemBinding
-import home.samples.quickcoffee.models.MenuItem
+import home.samples.quickcoffee.databinding.OrderItemBinding
+import home.samples.quickcoffee.models.OrderItem
 
-class CafeMenuAdapter(
+private const val TAG = "OrderAdapter"
+
+class OrderAdapter(
     val context: Context,
     private val onMinusClick: (Int) -> Unit,
     private val onPlusClick: (Int) -> Unit
-) : RecyclerView.Adapter<MenuViewHolder>() {
-    private var data: List<MenuItem> = emptyList()
+) : RecyclerView.Adapter<OrderViewHolder>() {
+    private var data: List<OrderItem> = emptyList()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: List<MenuItem>) {
+    fun setData(data: List<OrderItem>) {
         this.data = data
         notifyDataSetChanged()
     }
 
     override fun getItemCount() = data.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
-        return MenuViewHolder(
-            MenuItemBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
+        return OrderViewHolder(
+            OrderItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -35,18 +36,14 @@ class CafeMenuAdapter(
         )
     }
 
-    override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val item = data.getOrNull(position)
         with(holder.binding) {
-            if (item != null) {
-                Glide
-                    .with(image.context)
-                    .load(item.imageURL)
-                    .into(image)
-                coffeeName.text = item.name
-                val costText = "${item.price} " + context.getString(R.string.ruble)
-                cost.text = costText
-                quantity.text = item.quantity.toString()
+            item?.let {
+                name.text = it.name
+                val priceText = "${it.priceSum} " + context.getString(R.string.ruble)
+                priceSum.text = priceText
+                quantity.text = it.quantity.toString()
             }
         }
         holder.binding.minusButton.setOnClickListener {
@@ -62,5 +59,5 @@ class CafeMenuAdapter(
     }
 }
 
-class MenuViewHolder(val binding: MenuItemBinding) :
+class OrderViewHolder(val binding: OrderItemBinding) :
     RecyclerView.ViewHolder(binding.root)

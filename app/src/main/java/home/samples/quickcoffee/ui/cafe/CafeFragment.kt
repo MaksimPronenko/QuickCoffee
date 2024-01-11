@@ -40,8 +40,8 @@ class CafeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.token = arguments?.getString(ARG_TOKEN)
-        Log.d(TAG, viewModel.token.toString())
+        viewModel.token = arguments?.getString(ARG_TOKEN) ?: ""
+        Log.d(TAG, viewModel.token)
 
         viewModel.startLocation()
 
@@ -86,7 +86,6 @@ class CafeFragment : Fragment() {
                                 viewModel.cafeFlow.onEach {
                                     cafeAdapter.setData(it)
                                 }.launchIn(viewLifecycleOwner.lifecycleScope)
-
                             }
 
                             CafeVMState.DistancesLoaded -> {
@@ -113,6 +112,10 @@ class CafeFragment : Fragment() {
     private fun onCafeChosenClick(cafe: CafeItem) {
         val bundle =
             Bundle().apply {
+                putString(
+                    ARG_TOKEN,
+                    viewModel.token
+                )
                 putInt(
                     ARG_CAFE_ID,
                     cafe.id

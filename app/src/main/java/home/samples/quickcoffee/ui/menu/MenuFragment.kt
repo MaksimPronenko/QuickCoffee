@@ -5,13 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import home.samples.quickcoffee.R
 import home.samples.quickcoffee.databinding.FragmentMenuBinding
 import home.samples.quickcoffee.ui.adapters.CafeMenuAdapter
 import home.samples.quickcoffee.ui.cafe.ARG_TOKEN
@@ -37,8 +40,8 @@ class MenuFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.token = arguments?.getString(ARG_TOKEN)
-        viewModel.id = arguments?.getInt(ARG_CAFE_ID)
+        viewModel.token = arguments?.getString(ARG_TOKEN) ?: ""
+        viewModel.id = arguments?.getInt(ARG_CAFE_ID) ?: 0
         Log.d(TAG, "token = ${viewModel.token}, id = ${viewModel.id}")
 
         cafeMenuAdapter = CafeMenuAdapter(
@@ -60,7 +63,25 @@ class MenuFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "Функция onViewCreated() запущена")
         viewModel.loadCafeMenu()
-        binding.cafesRecycler.adapter = cafeMenuAdapter
+        binding.menuRecycler.adapter = cafeMenuAdapter
+
+        binding.paymentButton.setOnClickListener {
+            val orderIsNotEmpty = viewModel.payment()
+            if (orderIsNotEmpty) findNavController().navigate(R.id.action_MenuFragment_to_OrderFragment)
+            else Toast.makeText(context, requireContext().getString(R.string.order_is_empty), Toast.LENGTH_SHORT).show()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.menuChannel.collect { menu ->
+                    cafeMenuAdapter.setData(menu)
+                    menu.forEachIndexed { index, menuItem ->
+                        Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
+                    }
+                }
+            }
+        }
+
         statesProcessing()
     }
 
@@ -73,23 +94,22 @@ class MenuFragment : Fragment() {
                             MenuVMState.Loading -> {
                                 binding.progress.isVisible = true
                                 binding.loadingError.isVisible = false
-                                binding.cafesRecycler.isVisible = false
+                                binding.menuRecycler.isVisible = false
+                                binding.paymentButton.isVisible = false
                             }
 
                             MenuVMState.Loaded -> {
-                                binding.progress.isVisible = true
+                                binding.progress.isVisible = false
                                 binding.loadingError.isVisible = false
-                                binding.cafesRecycler.isVisible = true
-                                viewModel.menuFlow.onEach {
-                                    cafeMenuAdapter.setData(it)
-                                }.launchIn(viewLifecycleOwner.lifecycleScope)
-
+                                binding.menuRecycler.isVisible = true
+                                binding.paymentButton.isVisible = true
                             }
 
                             MenuVMState.Error -> {
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = true
-                                binding.cafesRecycler.isVisible = false
+                                binding.menuRecycler.isVisible = false
+                                binding.paymentButton.isVisible = false
                             }
                         }
                     }

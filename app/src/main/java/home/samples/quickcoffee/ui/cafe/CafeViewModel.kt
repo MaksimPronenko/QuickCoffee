@@ -1,7 +1,6 @@
 package home.samples.quickcoffee.ui.cafe
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -12,6 +11,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import home.samples.quickcoffee.App
 import home.samples.quickcoffee.data.Repository
 import home.samples.quickcoffee.models.CafeData
 import home.samples.quickcoffee.models.CafeItem
@@ -26,12 +26,12 @@ private const val TAG = "CafeVM"
 
 class CafeViewModel(
     private val repository: Repository,
-    application: Application
+    application: App
 ) : ViewModel() {
     private val _state = MutableStateFlow<CafeVMState>(CafeVMState.Loading)
     val state = _state.asStateFlow()
 
-    var token: String? = null
+    var token: String = ""
     private var cafeList: List<CafeData> = listOf()
     var cafeItemsList: List<CafeItem> = listOf()
     private val _cafeFlow = MutableStateFlow<List<CafeItem>>(emptyList())
@@ -52,14 +52,6 @@ class CafeViewModel(
             Log.d(TAG, cafeItemsList.toString())
             _cafeFlow.value = cafeItemsList
             _state.value = CafeVMState.DistancesLoaded
-//            if (latitudeCenterCurrent == null || longitudeCenterCurrent == null) {
-//                _state.value = ViewModelState.Error
-//            } else {
-//                if (firstLoading) {
-//                    Log.d(TAG, "firstLoading = true - Состояние Active включается.")
-//                    _state.value = ViewModelState.Loaded
-//                }
-//            }
         }
     }
 
