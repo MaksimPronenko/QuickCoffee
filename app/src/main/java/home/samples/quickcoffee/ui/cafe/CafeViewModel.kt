@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -26,7 +27,7 @@ private const val TAG = "CafeVM"
 
 class CafeViewModel(
     private val repository: Repository,
-    application: App
+    val application: App
 ) : ViewModel() {
     private val _state = MutableStateFlow<CafeVMState>(CafeVMState.Loading)
     val state = _state.asStateFlow()
@@ -58,15 +59,12 @@ class CafeViewModel(
     @SuppressLint("MissingPermission")
     fun startLocation() {
         Log.d(TAG, "Функция startLocation() запущена")
-        val request = LocationRequest.create()
-            .setInterval(1_000)
-            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-//        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-//            .apply {
-//                setWaitForAccurateLocation(false)
-//                setMinUpdateIntervalMillis(IMPLICIT_MIN_UPDATE_INTERVAL)
-//                setMaxUpdateDelayMillis(100000)
-//            }.build()
+        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
+            .apply {
+                setWaitForAccurateLocation(false)
+                setMinUpdateIntervalMillis(IMPLICIT_MIN_UPDATE_INTERVAL)
+                setMaxUpdateDelayMillis(1500)
+            }.build()
 
         fusedClient.requestLocationUpdates(
             request,
@@ -81,7 +79,7 @@ class CafeViewModel(
             _state.value = CafeVMState.Loading
             Log.d(TAG, "CafeVMState.Loading")
 
-            if (token != null) cafeList = repository.getLocations(token!!) ?: emptyList()
+            cafeList = repository.getLocations(token) ?: emptyList()
             if (cafeList.isEmpty()) {
                 Log.d(TAG, "CafeVMState.Error")
                 _state.value = CafeVMState.Error
@@ -122,5 +120,9 @@ class CafeViewModel(
             )
         }
         return cafes.toList()
+    }
+
+    fun clearOrder() {
+        application.order = listOf()
     }
 }

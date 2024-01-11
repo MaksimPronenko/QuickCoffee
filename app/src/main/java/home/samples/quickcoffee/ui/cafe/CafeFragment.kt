@@ -43,7 +43,8 @@ class CafeFragment : Fragment() {
         viewModel.token = arguments?.getString(ARG_TOKEN) ?: ""
         Log.d(TAG, viewModel.token)
 
-        viewModel.startLocation()
+        viewModel.clearOrder()      // Удаление данных прошлого заказа
+        viewModel.startLocation()   // Определение местоположения устройства
 
         cafeAdapter = CafeAdapter(
             context = requireContext(),

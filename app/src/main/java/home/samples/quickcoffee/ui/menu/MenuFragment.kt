@@ -74,10 +74,10 @@ class MenuFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.menuChannel.collect { menu ->
-                    cafeMenuAdapter.setData(menu)
                     menu.forEachIndexed { index, menuItem ->
                         Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
                     }
+                    cafeMenuAdapter.setData(menu)
                 }
             }
         }
@@ -92,6 +92,7 @@ class MenuFragment : Fragment() {
                     .collect { state ->
                         when (state) {
                             MenuVMState.Loading -> {
+                                Log.d(TAG, "MenuVMState.Loading")
                                 binding.progress.isVisible = true
                                 binding.loadingError.isVisible = false
                                 binding.menuRecycler.isVisible = false
@@ -99,13 +100,18 @@ class MenuFragment : Fragment() {
                             }
 
                             MenuVMState.Loaded -> {
+                                Log.d(TAG, "MenuVMState.Loaded")
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = false
                                 binding.menuRecycler.isVisible = true
                                 binding.paymentButton.isVisible = true
+                                viewModel.menuFlow.onEach { menu ->
+                                    cafeMenuAdapter.setData(menu)
+                                }.launchIn(viewLifecycleOwner.lifecycleScope)
                             }
 
                             MenuVMState.Error -> {
+                                Log.d(TAG, "MenuVMState.Error")
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = true
                                 binding.menuRecycler.isVisible = false

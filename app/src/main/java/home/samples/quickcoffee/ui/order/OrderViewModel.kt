@@ -22,6 +22,8 @@ class OrderViewModel(
     val state = _state.asStateFlow()
 
     var order: List<OrderItem> = listOf()
+    private val _orderFlow = MutableStateFlow<List<OrderItem>>(emptyList())
+    val orderFlow = _orderFlow.asStateFlow()
     private val _orderChannel = Channel<List<OrderItem>>()
     val orderChannel = _orderChannel.receiveAsFlow()
 
@@ -36,15 +38,15 @@ class OrderViewModel(
                 _state.value = ViewModelState.Error
             } else {
                 Log.d(TAG, "ViewModelState.Loaded")
+                _orderFlow.value = order
                 _state.value = ViewModelState.Loaded
-                _orderChannel.send(element = order)
             }
         }
     }
 
     fun onMinusClick(itemPosition: Int) {
+        Log.d(TAG, "onMinusClick($itemPosition)")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "onMinusClick($itemPosition)")
             val itemToChange = order[itemPosition]
             val orderNew = order.toMutableList()
             if (itemToChange.quantity >= 2) {
@@ -66,8 +68,8 @@ class OrderViewModel(
     }
 
     fun onPlusClick(itemPosition: Int) {
+        Log.d(TAG, "onPlusClick($itemPosition)")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "onPlusClick($itemPosition)")
             val itemToChange = order[itemPosition]
             val orderNew = order.toMutableList()
             val priceOf1Item = itemToChange.priceSum / itemToChange.quantity

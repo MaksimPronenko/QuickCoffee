@@ -18,6 +18,8 @@ import home.samples.quickcoffee.R
 import home.samples.quickcoffee.databinding.FragmentOrderBinding
 import home.samples.quickcoffee.ui.ViewModelState
 import home.samples.quickcoffee.ui.adapters.OrderAdapter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +39,7 @@ class OrderFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d(TAG, "Функция onCreate() запущена")
         orderAdapter = OrderAdapter(
             context = requireContext(),
             onMinusClick = { itemPosition -> viewModel.onMinusClick(itemPosition) },
@@ -49,6 +51,7 @@ class OrderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d(TAG, "Функция onCreateView() запущена")
         _binding = FragmentOrderBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -72,11 +75,11 @@ class OrderFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.orderChannel.collect { menu ->
-                    orderAdapter.setData(menu)
-                    menu.forEachIndexed { index, menuItem ->
-                        Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
+                viewModel.orderChannel.collect { order ->
+                    order.forEachIndexed { index, orderItem ->
+                        Log.d(TAG, "orderItem$index.quantity = ${orderItem.quantity}")
                     }
+                    orderAdapter.setData(order)
                 }
             }
         }
@@ -102,12 +105,12 @@ class OrderFragment : Fragment() {
                                 binding.loadingError.isVisible = false
                                 binding.orderRecycler.isVisible = true
                                 binding.payButton.isVisible = true
-                                viewModel.orderChannel.collect { menu ->
-                                    orderAdapter.setData(menu)
-                                    menu.forEachIndexed { index, menuItem ->
-                                        Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
+                                viewModel.orderFlow.onEach { order ->
+                                    order.forEachIndexed { index, orderItem ->
+                                        Log.d(TAG, "orderItem$index.quantity = ${orderItem.quantity}")
                                     }
-                                }
+                                    orderAdapter.setData(order)
+                                }.launchIn(viewLifecycleOwner.lifecycleScope)
                             }
 
                             ViewModelState.Error -> {

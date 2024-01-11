@@ -28,6 +28,8 @@ class MenuViewModel(
     var id: Int = 0
     private var menuDataList: List<MenuData> = listOf()
     var menu: List<MenuItem> = listOf()
+    private val _menuFlow = MutableStateFlow<List<MenuItem>>(emptyList())
+    val menuFlow = _menuFlow.asStateFlow()
     private val _menuChannel = Channel<List<MenuItem>>()
     val menuChannel = _menuChannel.receiveAsFlow()
 
@@ -43,9 +45,10 @@ class MenuViewModel(
                 _state.value = MenuVMState.Error
             } else {
                 menu = convertMenuDataListToMenuItemList(menuDataList)
+                _menuFlow.value = menu
+                _menuChannel.send(element = menu)
                 Log.d(TAG, "MenuVMState.Loaded")
                 _state.value = MenuVMState.Loaded
-                _menuChannel.send(element = menu)
             }
         }
     }
