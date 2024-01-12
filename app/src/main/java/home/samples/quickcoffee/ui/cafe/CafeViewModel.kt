@@ -17,8 +17,10 @@ import home.samples.quickcoffee.data.Repository
 import home.samples.quickcoffee.models.CafeData
 import home.samples.quickcoffee.models.CafeItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -33,10 +35,13 @@ class CafeViewModel(
     val state = _state.asStateFlow()
 
     var token: String = ""
+    var distancesCalculated = false
     private var cafeList: List<CafeData> = listOf()
     var cafeItemsList: List<CafeItem> = listOf()
     private val _cafeFlow = MutableStateFlow<List<CafeItem>>(emptyList())
     val cafeFlow = _cafeFlow.asStateFlow()
+//    private val _cafeChannel = Channel<List<CafeItem>>()
+//    val cafeChannel = _cafeChannel.receiveAsFlow()
 
     var latitudeCenterCurrent: Double? = null
     var longitudeCenterCurrent: Double? = null
@@ -48,22 +53,36 @@ class CafeViewModel(
         override fun onLocationResult(result: LocationResult) {
             latitudeCenterCurrent = result.lastLocation?.latitude
             longitudeCenterCurrent = result.lastLocation?.longitude
-            Log.d(TAG, "locationCallback: lat = $latitudeCenterCurrent, lon = $longitudeCenterCurrent")
+            Log.d(
+                TAG,
+                "locationCallback: lat = $latitudeCenterCurrent, lon = $longitudeCenterCurrent"
+            )
             cafeItemsList = createCafeItemsList()
             Log.d(TAG, cafeItemsList.toString())
+            refreshCafesWithDistances()
+//            _cafeFlow.value = cafeItemsList
+//            _cafeChannel.send(element = cafeItemsList)
+
+        }
+    }
+
+    fun refreshCafesWithDistances() {
+        viewModelScope.launch(Dispatchers.IO) {
             _cafeFlow.value = cafeItemsList
+//            _cafeChannel.send(element = cafeItemsList)
             _state.value = CafeVMState.DistancesLoaded
+            distancesCalculated = true
         }
     }
 
     @SuppressLint("MissingPermission")
     fun startLocation() {
         Log.d(TAG, "Функция startLocation() запущена")
-        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
+        val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 200)
             .apply {
                 setWaitForAccurateLocation(false)
                 setMinUpdateIntervalMillis(IMPLICIT_MIN_UPDATE_INTERVAL)
-                setMaxUpdateDelayMillis(1500)
+                setMaxUpdateDelayMillis(600)
             }.build()
 
         fusedClient.requestLocationUpdates(
@@ -88,7 +107,8 @@ class CafeViewModel(
                 Log.d(TAG, cafeItemsList.toString())
                 _cafeFlow.value = cafeItemsList
                 Log.d(TAG, "CafeVMState.Loaded")
-                _state.value = CafeVMState.Loaded
+                if (distancesCalculated) _state.value = CafeVMState.DistancesLoaded
+                else _state.value = CafeVMState.Loaded
             }
         }
     }

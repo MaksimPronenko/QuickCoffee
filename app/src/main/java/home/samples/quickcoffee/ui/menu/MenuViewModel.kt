@@ -33,20 +33,22 @@ class MenuViewModel(
     private val _menuChannel = Channel<List<MenuItem>>()
     val menuChannel = _menuChannel.receiveAsFlow()
 
-    fun loadCafeMenu() {
-        Log.d(TAG, "Функция loadCafeMenu() запущена")
+    fun loadCafeMenu(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.value = MenuVMState.Loading
-            Log.d(TAG, "MenuVMState.Loading")
-
-            menuDataList = repository.getCafeMenu(token, id) ?: emptyList()
+            val jobLoadData = viewModelScope.launch(Dispatchers.IO) {
+                this@MenuViewModel.id = id
+                Log.d(TAG, "Функция loadCafeMenu($id) запущена")
+                _state.value = MenuVMState.Loading
+                Log.d(TAG, "MenuVMState.Loading")
+                menuDataList = repository.getCafeMenu(token, id) ?: emptyList()
+            }
+            jobLoadData.join()
             if (menuDataList.isEmpty()) {
                 Log.d(TAG, "MenuVMState.Error")
                 _state.value = MenuVMState.Error
             } else {
                 menu = convertMenuDataListToMenuItemList(menuDataList)
                 _menuFlow.value = menu
-                _menuChannel.send(element = menu)
                 Log.d(TAG, "MenuVMState.Loaded")
                 _state.value = MenuVMState.Loaded
             }
@@ -54,6 +56,7 @@ class MenuViewModel(
     }
 
     private fun convertMenuDataListToMenuItemList(menuDataList: List<MenuData>): List<MenuItem> {
+        Log.d(TAG, "Функция convertMenuDataListToMenuItemList() запущена")
         val menuItemListMutable: MutableList<MenuItem> = mutableListOf()
         menuDataList.forEach {
             menuItemListMutable.add(
@@ -114,5 +117,10 @@ class MenuViewModel(
         }
         application.order = orderMutable.toList()
         return application.order.isNotEmpty()
+    }
+
+    fun clearMenu() {
+        menu = listOf()
+        _state.value = MenuVMState.Loading
     }
 }

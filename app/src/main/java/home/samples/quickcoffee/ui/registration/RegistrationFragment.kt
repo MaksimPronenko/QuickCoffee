@@ -234,4 +234,9 @@ class RegistrationFragment : Fragment() {
         }
         viewModel.handlePermissionsStateChange(isAllGranted)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

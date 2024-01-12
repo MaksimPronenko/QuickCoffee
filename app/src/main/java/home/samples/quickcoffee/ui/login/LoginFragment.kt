@@ -160,4 +160,9 @@ class LoginFragment : Fragment() {
         else binding.passwordLayout.boxBackgroundColor =
             requireContext().getColor(R.color.error_background)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

@@ -129,4 +129,9 @@ class CafeFragment : Fragment() {
         super.onStop()
         viewModel.fusedClient.removeLocationUpdates(viewModel.locationCallback)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
