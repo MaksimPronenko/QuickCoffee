@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val ARG_CAFE_ID = "cafe_id"
+const val ARG_CAFE_ID = "cafeId"
 private const val TAG = "MenuFragment"
 
 @AndroidEntryPoint
@@ -38,15 +39,16 @@ class MenuFragment : Fragment() {
 
     private lateinit var cafeMenuAdapter: CafeMenuAdapter
 
-    private var newId: Int = 0
+    private var newCafeId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "Функция onCreate() запущена")
-        viewModel.token = arguments?.getString(ARG_TOKEN) ?: ""
-        newId = arguments?.getInt(ARG_CAFE_ID) ?: 0
-//        if (newId != viewModel.id) viewModel.loadCafeMenu(newId)
-        Log.d(TAG, "token = ${viewModel.token}, newId = $newId")
+        val newToken = arguments?.getString(ARG_TOKEN) ?: ""
+        if (newToken != "") viewModel.token = newToken
+//            viewModel.token = arguments?.getString(ARG_TOKEN) ?: ""
+        newCafeId = arguments?.getInt(ARG_CAFE_ID) ?: 0
+        Log.d(TAG, "token = ${viewModel.token}, cafeId = $newCafeId")
 
         cafeMenuAdapter = CafeMenuAdapter(
             context = requireContext(),
@@ -61,20 +63,40 @@ class MenuFragment : Fragment() {
     ): View {
         Log.d(TAG, "Функция onCreateView() запущена")
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
+        viewModel.checkCafeId(newCafeId)
+        newCafeId = 0
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "Функция onViewCreated() запущена")
-        viewModel.loadCafeMenu(newId)
-        Log.d(TAG, "Функция viewModel.loadCafeMenu($newId) запущена")
+
         binding.menuRecycler.adapter = cafeMenuAdapter
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.d(TAG, "Нажата системная кнопка Назад")
+            val bundle =
+                Bundle().apply {
+                    putString(
+                        ARG_TOKEN,
+                        viewModel.token
+                    )
+                }
+            findNavController().navigate(
+                R.id.action_MenuFragment_to_CafeFragment,
+                bundle
+            )
+        }
 
         binding.paymentButton.setOnClickListener {
             val orderIsNotEmpty = viewModel.payment()
             if (orderIsNotEmpty) findNavController().navigate(R.id.action_MenuFragment_to_OrderFragment)
-            else Toast.makeText(context, requireContext().getString(R.string.order_is_empty), Toast.LENGTH_SHORT).show()
+            else Toast.makeText(
+                context,
+                requireContext().getString(R.string.order_is_empty),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -83,31 +105,19 @@ class MenuFragment : Fragment() {
                     menu.forEachIndexed { index, menuItem ->
                         Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
                     }
+                    Log.d(TAG, "Загружаем данные из Channel")
                     cafeMenuAdapter.setData(menu)
                 }
             }
         }
-//        viewLifecycleOwner.lifecycleScope
-//            .launchWhenStarted {
-//                viewModel.menuChannel.collect { menu ->
-//                    menu.forEachIndexed { index, menuItem ->
-//                        Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
-//                    }
-//                    cafeMenuAdapter.setData(menu)
-//                }
-//            }
 
         statesProcessing()
     }
 
     private fun statesProcessing() {
         Log.d(TAG, "Функция statesProcessing() запущена")
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                viewModel.state
-//                    .collect { state ->
-        viewLifecycleOwner.lifecycleScope
-            .launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state
                     .collect { state ->
                         when (state) {
@@ -127,8 +137,12 @@ class MenuFragment : Fragment() {
                                 binding.paymentButton.isVisible = true
                                 viewModel.menuFlow.onEach { menu ->
                                     menu.forEachIndexed { index, menuItem ->
-                                        Log.d(TAG, "item$index.quantity = ${menuItem.quantity}")
+                                        Log.d(
+                                            TAG,
+                                            "item$index.quantity = ${menuItem.quantity}"
+                                        )
                                     }
+                                    Log.d(TAG, "Загружаем данные из Flow")
                                     cafeMenuAdapter.setData(menu)
                                 }.launchIn(viewLifecycleOwner.lifecycleScope)
                             }
@@ -142,14 +156,13 @@ class MenuFragment : Fragment() {
                             }
                         }
                     }
-//            }
+
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "Функция onDestroyView() запущена")
-        viewModel.clearMenu()
         _binding = null
     }
 }

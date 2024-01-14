@@ -3,7 +3,7 @@ package home.samples.quickcoffee.ui.cafe
 import android.annotation.SuppressLint
 import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -17,10 +17,8 @@ import home.samples.quickcoffee.data.Repository
 import home.samples.quickcoffee.models.CafeData
 import home.samples.quickcoffee.models.CafeItem
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sqrt
@@ -30,7 +28,8 @@ private const val TAG = "CafeVM"
 class CafeViewModel(
     private val repository: Repository,
     val application: App
-) : ViewModel() {
+) : AndroidViewModel(application) {
+    //) : ViewModel() {
     private val _state = MutableStateFlow<CafeVMState>(CafeVMState.Loading)
     val state = _state.asStateFlow()
 

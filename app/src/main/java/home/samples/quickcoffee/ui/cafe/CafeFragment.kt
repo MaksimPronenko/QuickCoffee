@@ -111,6 +111,7 @@ class CafeFragment : Fragment() {
     }
 
     private fun onCafeChosenClick(cafe: CafeItem) {
+        Log.d(TAG, "onCafeChosenClick(), где cafe.id = ${cafe.id}")
         val bundle =
             Bundle().apply {
                 putString(

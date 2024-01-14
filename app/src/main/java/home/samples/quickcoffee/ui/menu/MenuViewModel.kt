@@ -9,6 +9,7 @@ import home.samples.quickcoffee.models.MenuData
 import home.samples.quickcoffee.models.MenuItem
 import home.samples.quickcoffee.models.OrderItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,35 +23,34 @@ class MenuViewModel(
     val application: App
 ) : ViewModel() {
     private val _state = MutableStateFlow<MenuVMState>(MenuVMState.Loading)
-    val state = _state.asStateFlow()
+    var state = _state.asStateFlow()
 
     var token: String = ""
-    var id: Int = 0
+    private var cafeId: Int = 0
     private var menuDataList: List<MenuData> = listOf()
     var menu: List<MenuItem> = listOf()
     private val _menuFlow = MutableStateFlow<List<MenuItem>>(emptyList())
     val menuFlow = _menuFlow.asStateFlow()
     private val _menuChannel = Channel<List<MenuItem>>()
     val menuChannel = _menuChannel.receiveAsFlow()
+    private var loadMenuJob: Job? = null
 
-    fun loadCafeMenu(id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val jobLoadData = viewModelScope.launch(Dispatchers.IO) {
-                this@MenuViewModel.id = id
-                Log.d(TAG, "Функция loadCafeMenu($id) запущена")
-                _state.value = MenuVMState.Loading
-                Log.d(TAG, "MenuVMState.Loading")
-                menuDataList = repository.getCafeMenu(token, id) ?: emptyList()
-            }
-            jobLoadData.join()
+    private fun loadCafeMenu() {
+        Log.d(TAG, "Функция loadCafeMenu() запущена, cafeId = $cafeId")
+        Log.d(TAG, "loadMenuJob = ${loadMenuJob?.isActive == true}")
+        loadMenuJob = viewModelScope.launch(Dispatchers.IO) {
+            _state.value = MenuVMState.Loading
+            Log.d(TAG, "viewModelScope - loadCafeMenu(), cafeId = $cafeId")
+            Log.d(TAG, "MenuVMState.Loading")
+            menuDataList = repository.getCafeMenu(token, cafeId) ?: emptyList()
             if (menuDataList.isEmpty()) {
                 Log.d(TAG, "MenuVMState.Error")
                 _state.value = MenuVMState.Error
             } else {
                 menu = convertMenuDataListToMenuItemList(menuDataList)
-                _menuFlow.value = menu
                 Log.d(TAG, "MenuVMState.Loaded")
                 _state.value = MenuVMState.Loaded
+                _menuFlow.value = menu
             }
         }
     }
@@ -106,7 +106,7 @@ class MenuViewModel(
             if (it.quantity >= 1) {
                 orderMutable.add(
                     OrderItem(
-                        cafeId = id,
+                        cafeId = cafeId,
                         menuId = it.id,
                         name = it.name,
                         quantity = it.quantity,
@@ -119,8 +119,13 @@ class MenuViewModel(
         return application.order.isNotEmpty()
     }
 
-    fun clearMenu() {
-        menu = listOf()
-        _state.value = MenuVMState.Loading
+    fun checkCafeId(newCafeId: Int) {
+        Log.d(TAG, "checkCafeId($newCafeId) запущена")
+        if (newCafeId != cafeId && newCafeId != 0) {
+            cafeId = newCafeId
+            menu = emptyList()
+            application.order = emptyList()
+            loadCafeMenu()
+        }
     }
 }

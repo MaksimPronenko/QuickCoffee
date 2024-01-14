@@ -49,10 +49,8 @@ class RegistrationFragment : Fragment() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { map ->
             if (map.values.all { it }) {
-                Toast.makeText(context, "Permissions granted", Toast.LENGTH_SHORT).show()
                 viewModel.handlePermissionsStateChange(true)
             } else {
-                Toast.makeText(context, "Permissions not granted", Toast.LENGTH_SHORT).show()
                 viewModel.handlePermissionsStateChange(false)
             }
         }
@@ -140,12 +138,6 @@ class RegistrationFragment : Fragment() {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            viewModel.registrationResult?.token
-                                ?: getString(R.string.token_is_missing),
-                            Toast.LENGTH_LONG
-                        ).show()
                         findNavController().navigate(
                             R.id.action_RegistrationFragment_to_LoginFragment
                         )
@@ -227,11 +219,7 @@ class RegistrationFragment : Fragment() {
                 )
             } == PackageManager.PERMISSION_GRANTED
         }
-        if (isAllGranted) {
-            Toast.makeText(context, "Permissions granted", Toast.LENGTH_SHORT).show()
-        } else {
-            launcher.launch(REQUEST_PERMISSIONS)
-        }
+        if (!isAllGranted) launcher.launch(REQUEST_PERMISSIONS)
         viewModel.handlePermissionsStateChange(isAllGranted)
     }
 

@@ -54,14 +54,17 @@
             app:argType="string" />
 
         <argument
-            android:name="id"
+            android:name="cafeId"
             android:defaultValue="0"
             app:argType="integer" />
 
         <action
             android:id="@+id/action_MenuFragment_to_OrderFragment"
-            app:destination="@id/OrderFragment"
-            app:popUpTo="@+id/OrderFragment" />
+            app:destination="@id/OrderFragment" />
+
+        <action
+            android:id="@+id/action_MenuFragment_to_CafeFragment"
+            app:destination="@id/CafeFragment" />
 
     </fragment>
 
@@ -75,6 +78,10 @@
             app:destination="@id/RegistrationFragment"
             app:popUpTo="@+id/RegistrationFragment"
             app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_OrderFragment_to_MenuFragment"
+            app:destination="@id/MenuFragment" />
 
     </fragment>
 

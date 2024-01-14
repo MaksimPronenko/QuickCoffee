@@ -100,12 +100,6 @@ class LoginFragment : Fragment() {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            viewModel.registrationResult?.token
-                                ?: getString(R.string.token_is_missing),
-                            Toast.LENGTH_LONG
-                        ).show()
                         val bundle =
                             Bundle().apply {
                                 putString(

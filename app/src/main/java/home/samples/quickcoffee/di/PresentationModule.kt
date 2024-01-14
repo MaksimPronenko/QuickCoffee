@@ -62,6 +62,7 @@ class PresentationModule {
     }
 
     @Provides
+    @Singleton
     fun provideCafeViewModelFactory(cafeViewModel: CafeViewModel): CafeViewModelFactory {
         return CafeViewModelFactory(cafeViewModel)
     }

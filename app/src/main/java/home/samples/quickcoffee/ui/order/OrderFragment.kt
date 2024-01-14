@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +19,8 @@ import home.samples.quickcoffee.R
 import home.samples.quickcoffee.databinding.FragmentOrderBinding
 import home.samples.quickcoffee.ui.ViewModelState
 import home.samples.quickcoffee.ui.adapters.OrderAdapter
+import home.samples.quickcoffee.ui.cafe.ARG_TOKEN
+import home.samples.quickcoffee.ui.menu.ARG_CAFE_ID
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -62,6 +65,25 @@ class OrderFragment : Fragment() {
         viewModel.loadOrder()
         binding.orderRecycler.adapter = orderAdapter
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.d(TAG, "Нажата системная кнопка Назад")
+            val bundle =
+                Bundle().apply {
+                    putString(
+                        ARG_TOKEN,
+                        ""
+                    )
+                    putInt(
+                        ARG_CAFE_ID,
+                        0
+                    )
+                }
+            findNavController().navigate(
+                R.id.action_OrderFragment_to_MenuFragment,
+                bundle
+            )
+        }
+
         binding.payButton.setOnClickListener {
             Log.d(TAG, "order = ${viewModel.order}")
             val orderIsNotEmpty = viewModel.checkOrder()
@@ -96,6 +118,7 @@ class OrderFragment : Fragment() {
                             ViewModelState.Loading -> {
                                 binding.progress.isVisible = true
                                 binding.loadingError.isVisible = false
+                                binding.orderInformation.isVisible = false
                                 binding.orderRecycler.isVisible = false
                                 binding.payButton.isVisible = false
                             }
@@ -103,6 +126,7 @@ class OrderFragment : Fragment() {
                             ViewModelState.Loaded -> {
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = false
+                                binding.orderInformation.isVisible = true
                                 binding.orderRecycler.isVisible = true
                                 binding.payButton.isVisible = true
                                 viewModel.orderFlow.onEach { order ->
@@ -116,6 +140,7 @@ class OrderFragment : Fragment() {
                             ViewModelState.Error -> {
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = true
+                                binding.orderInformation.isVisible = false
                                 binding.orderRecycler.isVisible = false
                                 binding.payButton.isVisible = false
                             }
