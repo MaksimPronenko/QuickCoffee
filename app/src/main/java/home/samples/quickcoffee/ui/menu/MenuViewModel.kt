@@ -8,6 +8,7 @@ import home.samples.quickcoffee.data.Repository
 import home.samples.quickcoffee.models.MenuData
 import home.samples.quickcoffee.models.MenuItem
 import home.samples.quickcoffee.models.OrderItem
+import home.samples.quickcoffee.ui.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +23,7 @@ class MenuViewModel(
     private val repository: Repository,
     val application: App
 ) : ViewModel() {
-    private val _state = MutableStateFlow<MenuVMState>(MenuVMState.Loading)
+    private val _state = MutableStateFlow<ViewModelState>(ViewModelState.Loading)
     var state = _state.asStateFlow()
 
     var token: String = ""
@@ -39,17 +40,17 @@ class MenuViewModel(
         Log.d(TAG, "Функция loadCafeMenu() запущена, cafeId = $cafeId")
         Log.d(TAG, "loadMenuJob = ${loadMenuJob?.isActive == true}")
         loadMenuJob = viewModelScope.launch(Dispatchers.IO) {
-            _state.value = MenuVMState.Loading
+            _state.value = ViewModelState.Loading
             Log.d(TAG, "viewModelScope - loadCafeMenu(), cafeId = $cafeId")
             Log.d(TAG, "MenuVMState.Loading")
             menuDataList = repository.getCafeMenu(token, cafeId) ?: emptyList()
             if (menuDataList.isEmpty()) {
                 Log.d(TAG, "MenuVMState.Error")
-                _state.value = MenuVMState.Error
+                _state.value = ViewModelState.Error
             } else {
                 menu = convertMenuDataListToMenuItemList(menuDataList)
                 Log.d(TAG, "MenuVMState.Loaded")
-                _state.value = MenuVMState.Loaded
+                _state.value = ViewModelState.Loaded
                 _menuFlow.value = menu
             }
         }

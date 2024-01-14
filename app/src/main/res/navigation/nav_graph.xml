@@ -41,6 +41,30 @@
             android:id="@+id/action_CafeFragment_to_MenuFragment"
             app:destination="@id/MenuFragment" />
 
+        <action
+            android:id="@+id/action_CafeFragment_to_MapFragment"
+            app:destination="@id/MapFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/MapFragment"
+        android:name="home.samples.quickcoffee.ui.map.MapFragment"
+        tools:layout="@layout/fragment_map">
+
+        <argument
+            android:name="token"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_MapFragment_to_MenuFragment"
+            app:destination="@id/MenuFragment" />
+
+        <action
+            android:id="@+id/action_MapFragment_to_CafeFragment"
+            app:destination="@id/CafeFragment" />
+
     </fragment>
 
     <fragment

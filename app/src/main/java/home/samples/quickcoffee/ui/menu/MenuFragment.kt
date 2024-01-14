@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import home.samples.quickcoffee.R
 import home.samples.quickcoffee.databinding.FragmentMenuBinding
+import home.samples.quickcoffee.ui.ViewModelState
 import home.samples.quickcoffee.ui.adapters.CafeMenuAdapter
 import home.samples.quickcoffee.ui.cafe.ARG_TOKEN
 import kotlinx.coroutines.flow.launchIn
@@ -89,6 +90,21 @@ class MenuFragment : Fragment() {
             )
         }
 
+        binding.backButton.setOnClickListener {
+            Log.d(TAG, "Нажата кнопка Назад")
+            val bundle =
+                Bundle().apply {
+                    putString(
+                        ARG_TOKEN,
+                        viewModel.token
+                    )
+                }
+            findNavController().navigate(
+                R.id.action_MenuFragment_to_CafeFragment,
+                bundle
+            )
+        }
+
         binding.paymentButton.setOnClickListener {
             val orderIsNotEmpty = viewModel.payment()
             if (orderIsNotEmpty) findNavController().navigate(R.id.action_MenuFragment_to_OrderFragment)
@@ -116,12 +132,16 @@ class MenuFragment : Fragment() {
 
     private fun statesProcessing() {
         Log.d(TAG, "Функция statesProcessing() запущена")
+//        viewLifecycleOwner.lifecycleScope
+//            .launchWhenStarted {
+//        viewLifecycleOwner.lifecycleScope.repeatOnLifecycle(Lifecycle.State.RESUMED) {
         viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state
                     .collect { state ->
                         when (state) {
-                            MenuVMState.Loading -> {
+                            ViewModelState.Loading -> {
                                 Log.d(TAG, "MenuVMState.Loading")
                                 binding.progress.isVisible = true
                                 binding.loadingError.isVisible = false
@@ -129,7 +149,7 @@ class MenuFragment : Fragment() {
                                 binding.paymentButton.isVisible = false
                             }
 
-                            MenuVMState.Loaded -> {
+                            ViewModelState.Loaded -> {
                                 Log.d(TAG, "MenuVMState.Loaded")
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = false
@@ -147,7 +167,7 @@ class MenuFragment : Fragment() {
                                 }.launchIn(viewLifecycleOwner.lifecycleScope)
                             }
 
-                            MenuVMState.Error -> {
+                            ViewModelState.Error -> {
                                 Log.d(TAG, "MenuVMState.Error")
                                 binding.progress.isVisible = false
                                 binding.loadingError.isVisible = true

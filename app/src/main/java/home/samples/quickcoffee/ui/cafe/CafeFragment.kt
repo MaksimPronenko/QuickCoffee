@@ -65,6 +65,18 @@ class CafeFragment : Fragment() {
         Log.d(TAG, "Функция onViewCreated() запущена")
         viewModel.loadCafesLocations()
         binding.cafesRecycler.adapter = cafeAdapter
+
+        binding.onMapButton.setOnClickListener {
+            val bundle =
+                Bundle().apply {
+                    putString(
+                        ARG_TOKEN,
+                        viewModel.token
+                    )
+                }
+            findNavController().navigate(R.id.action_CafeFragment_to_MapFragment, bundle)
+        }
+
         statesProcessing()
     }
 

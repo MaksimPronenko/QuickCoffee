@@ -3,7 +3,7 @@ package home.samples.quickcoffee.ui.cafe
 import android.annotation.SuppressLint
 import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -28,8 +28,7 @@ private const val TAG = "CafeVM"
 class CafeViewModel(
     private val repository: Repository,
     val application: App
-) : AndroidViewModel(application) {
-    //) : ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow<CafeVMState>(CafeVMState.Loading)
     val state = _state.asStateFlow()
 
@@ -39,8 +38,6 @@ class CafeViewModel(
     var cafeItemsList: List<CafeItem> = listOf()
     private val _cafeFlow = MutableStateFlow<List<CafeItem>>(emptyList())
     val cafeFlow = _cafeFlow.asStateFlow()
-//    private val _cafeChannel = Channel<List<CafeItem>>()
-//    val cafeChannel = _cafeChannel.receiveAsFlow()
 
     var latitudeCenterCurrent: Double? = null
     var longitudeCenterCurrent: Double? = null
@@ -59,9 +56,6 @@ class CafeViewModel(
             cafeItemsList = createCafeItemsList()
             Log.d(TAG, cafeItemsList.toString())
             refreshCafesWithDistances()
-//            _cafeFlow.value = cafeItemsList
-//            _cafeChannel.send(element = cafeItemsList)
-
         }
     }
 
@@ -92,7 +86,7 @@ class CafeViewModel(
     }
 
     fun loadCafesLocations() {
-        Log.d(TAG, "Функция loadCafe() запущена")
+        Log.d(TAG, "Функция loadCafesLocations() запущена")
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = CafeVMState.Loading
             Log.d(TAG, "CafeVMState.Loading")

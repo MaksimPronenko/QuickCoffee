@@ -4,6 +4,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs")
     id("kotlin-kapt")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -71,6 +72,12 @@ dependencies {
     // Geolocation
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    // osmdroid
+    implementation("org.osmdroid:osmdroid-android:6.1.11")
+    implementation("org.osmdroid:osmdroid-wms:6.1.11")
+    implementation("org.osmdroid:osmdroid-mapsforge:6.1.11")
+    implementation("org.osmdroid:osmdroid-geopackage:6.1.11")
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.14.2")

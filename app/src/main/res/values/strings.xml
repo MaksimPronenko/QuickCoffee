@@ -21,4 +21,6 @@
     <string name="loading_error">Ошибка загрузки</string>
     <string name="ruble">руб</string>
     <string name="order_is_empty">Заказ пуст</string>
+    <string name="map">Карта</string>
+    <string name="on_map">На карте</string>
 </resources>

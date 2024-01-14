@@ -10,6 +10,8 @@ import home.samples.quickcoffee.ui.cafe.CafeViewModel
 import home.samples.quickcoffee.ui.cafe.CafeViewModelFactory
 import home.samples.quickcoffee.ui.login.LoginViewModel
 import home.samples.quickcoffee.ui.login.LoginViewModelFactory
+import home.samples.quickcoffee.ui.map.MapViewModel
+import home.samples.quickcoffee.ui.map.MapViewModelFactory
 import home.samples.quickcoffee.ui.menu.MenuViewModel
 import home.samples.quickcoffee.ui.menu.MenuViewModelFactory
 import home.samples.quickcoffee.ui.order.OrderViewModel
@@ -99,5 +101,19 @@ class PresentationModule {
     @Singleton
     fun provideOrderViewModelFactory(orderViewModel: OrderViewModel): OrderViewModelFactory {
         return OrderViewModelFactory(orderViewModel)
+    }
+
+    @Provides
+    fun provideMapViewModel(
+        repository: Repository
+    ): MapViewModel {
+        return MapViewModel(
+            repository
+        )
+    }
+
+    @Provides
+    fun provideMapViewModelFactory(mapViewModel: MapViewModel): MapViewModelFactory {
+        return MapViewModelFactory(mapViewModel)
     }
 }

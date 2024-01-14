@@ -84,6 +84,25 @@ class OrderFragment : Fragment() {
             )
         }
 
+        binding.backButton.setOnClickListener {
+            Log.d(TAG, "Нажата кнопка Назад")
+            val bundle =
+                Bundle().apply {
+                    putString(
+                        ARG_TOKEN,
+                        ""
+                    )
+                    putInt(
+                        ARG_CAFE_ID,
+                        0
+                    )
+                }
+            findNavController().navigate(
+                R.id.action_OrderFragment_to_MenuFragment,
+                bundle
+            )
+        }
+
         binding.payButton.setOnClickListener {
             Log.d(TAG, "order = ${viewModel.order}")
             val orderIsNotEmpty = viewModel.checkOrder()
@@ -111,7 +130,7 @@ class OrderFragment : Fragment() {
 
     private fun statesProcessing() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state
                     .collect { state ->
                         when (state) {
