@@ -3,6 +3,7 @@ package home.samples.quickcoffee.ui.menu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
+@Suppress("UNCHECKED_CAST")
 class MenuViewModelFactory (private val menuViewModel: MenuViewModel) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

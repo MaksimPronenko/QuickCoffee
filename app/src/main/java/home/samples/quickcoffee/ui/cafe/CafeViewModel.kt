@@ -33,7 +33,7 @@ class CafeViewModel(
     val state = _state.asStateFlow()
 
     var token: String = ""
-    var distancesCalculated = false
+    private var distancesCalculated = false
     private var cafeList: List<CafeData> = listOf()
     var cafeItemsList: List<CafeItem> = listOf()
     private val _cafeFlow = MutableStateFlow<List<CafeItem>>(emptyList())

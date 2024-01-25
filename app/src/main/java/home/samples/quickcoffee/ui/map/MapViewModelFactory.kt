@@ -3,6 +3,7 @@ package home.samples.quickcoffee.ui.map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
+@Suppress("UNCHECKED_CAST")
 class MapViewModelFactory (private val mapViewModel: MapViewModel) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
