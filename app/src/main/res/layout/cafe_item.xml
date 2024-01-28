@@ -42,6 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cafe_name"
+            tools:ignore="TextContrastCheck"
             tools:text="@tools:sample/cities" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

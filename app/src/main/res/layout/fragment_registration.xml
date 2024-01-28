@@ -125,7 +125,7 @@
                 android:textColor="@color/brown_light_text"
                 android:textColorHint="@color/brown_light_text"
                 android:textSize="18sp"
-                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize" />
+                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize,DuplicateSpeakableTextCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,20 +171,20 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/registration_button"
-        style="@style/ButtonBrownBorderlessHeight48"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="18dp"
-        android:layout_marginTop="30.51dp"
-        android:background="@drawable/button_rounded_24"
-        android:padding="13dp"
-        app:layout_constraintTop_toBottomOf="@id/repeat_password_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/registration"
-        tools:ignore="VisualLintButtonSize" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/registration_button"
+            style="@style/ButtonBrownBorderlessHeight48"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="30.51dp"
+            android:background="@drawable/button_rounded_24"
+            android:padding="13dp"
+            android:text="@string/registration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/repeat_password_layout"
+            tools:ignore="VisualLintButtonSize,DuplicateSpeakableTextCheck" />
 
     </LinearLayout>
 

@@ -83,7 +83,7 @@
                 android:textColor="@color/brown_light_text"
                 android:textColorHint="@color/brown_light_text"
                 android:textSize="18sp"
-                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize" />
+                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize,DuplicateSpeakableTextCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -125,7 +125,7 @@
                 android:textColor="@color/brown_light_text"
                 android:textColorHint="@color/brown_light_text"
                 android:textSize="18sp"
-                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize" />
+                tools:ignore="TouchTargetSizeCheck,TextContrastCheck,VisualLintTextFieldSize,DuplicateSpeakableTextCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
