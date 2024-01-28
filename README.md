@@ -41,6 +41,7 @@
 <img src="https://github.com/MaksimPronenko/QuickCoffee/assets/105295402/6f3041db-b158-439f-a57b-13a1b42e9126" width="270" height="585">
 <img src="https://github.com/MaksimPronenko/QuickCoffee/assets/105295402/f2889535-10cc-4113-b4b0-6e705e14ddc9" width="270" height="585">
 
+
 ## Инструкция по запуску приложения
 
 Приложение написано на Android Studio + gradle.
